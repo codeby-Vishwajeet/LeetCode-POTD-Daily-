@@ -1,0 +1,52 @@
+class Solution {
+public:
+    // Renamed to match LeetCode's expected function name
+    int maxPathScore(vector<vector<int>>& grid, int k) {
+        int m = grid.size();
+        int n = grid[0].size();
+        
+        int max_k = min(k, m + n - 1);
+        
+        vector<vector<int>> prev_row(n, vector<int>(max_k + 1, -1));
+        
+        prev_row[0][0] = 0; 
+        
+        for (int r = 0; r < m; ++r) {
+            vector<vector<int>> curr_row(n, vector<int>(max_k + 1, -1));
+            
+            for (int c = 0; c < n; ++c) {
+                if (r == 0 && c == 0) {
+                    curr_row[0][0] = 0;
+                    continue;
+                }
+                
+                int val = grid[r][c];
+                int cst = (val > 0) ? 1 : 0; 
+                int scr = val;               
+                
+                for (int w = cst; w <= max_k; ++w) {
+                    int best = -1;
+                    
+                    if (r > 0 && prev_row[c][w - cst] != -1) {
+                        best = max(best, prev_row[c][w - cst] + scr);
+                    }
+                    
+                    if (c > 0 && curr_row[c - 1][w - cst] != -1) {
+                        best = max(best, curr_row[c - 1][w - cst] + scr);
+                    }
+                    
+                    curr_row[c][w] = best;
+                }
+            }
+            // Added std:: to fix the warning
+            prev_row = std::move(curr_row);
+        }
+        
+        int ans = -1;
+        for (int w = 0; w <= max_k; ++w) {
+            ans = max(ans, prev_row[n - 1][w]);
+        }
+        
+        return ans;
+    }
+};
