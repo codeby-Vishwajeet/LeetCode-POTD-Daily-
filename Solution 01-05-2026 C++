@@ -1,0 +1,30 @@
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    int maxRotateFunction(vector<int>& nums) {
+        long long sum = 0;
+        long long F = 0;
+        int n = nums.size();
+        
+        // Calculate the total sum of the array and the initial F(0)
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            F += (long long)i * nums[i];
+        }
+        
+        long long maxF = F;
+        
+        // Calculate F(k) using F(k-1)
+        // We iterate backwards because rotating clockwise moves the last elements to the front
+        for (int i = n - 1; i > 0; i--) {
+            F = F + sum - (long long)n * nums[i];
+            maxF = max(maxF, F);
+        }
+        
+        return maxF;
+    }
+};
