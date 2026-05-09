@@ -1,0 +1,41 @@
+class Solution {
+public:
+    vector<vector<int>> rotateGrid(vector<vector<int>>& grid, int k) {
+        int m = grid.size();
+        int n = grid[0].size();
+        int num_layers = min(m, n) / 2;
+
+        // Process each concentric layer individually
+        for (int c = 0; c < num_layers; ++c) {
+            vector<int> vals;
+            
+            // 1. Extract the layer in a clockwise order
+            // Top row
+            for (int j = c; j <= n - 1 - c; ++j) vals.push_back(grid[c][j]);
+            // Right column
+            for (int i = c + 1; i <= m - 2 - c; ++i) vals.push_back(grid[i][n - 1 - c]);
+            // Bottom row
+            for (int j = n - 1 - c; j >= c; --j) vals.push_back(grid[m - 1 - c][j]);
+            // Left column
+            for (int i = m - 2 - c; i >= c + 1; --i) vals.push_back(grid[i][c]);
+            
+            int L = vals.size();
+            // 2. Calculate the effective number of rotations
+            int rot = k % L;
+            
+            int idx = 0;
+            
+            // 3. Re-inject the elements shifted by 'rot' (which acts as a counter-clockwise rotation)
+            // Top row
+            for (int j = c; j <= n - 1 - c; ++j) grid[c][j] = vals[(idx++ + rot) % L];
+            // Right column
+            for (int i = c + 1; i <= m - 2 - c; ++i) grid[i][n - 1 - c] = vals[(idx++ + rot) % L];
+            // Bottom row
+            for (int j = n - 1 - c; j >= c; --j) grid[m - 1 - c][j] = vals[(idx++ + rot) % L];
+            // Left column
+            for (int i = m - 2 - c; i >= c + 1; --i) grid[i][c] = vals[(idx++ + rot) % L];
+        }
+        
+        return grid;
+    }
+};
