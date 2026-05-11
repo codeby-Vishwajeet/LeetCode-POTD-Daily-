@@ -1,0 +1,26 @@
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> separateDigits(vector<int>& nums) {
+        vector<int> answer;
+        
+        // Iterate through each number in the input array
+        for (int num : nums) {
+            // Convert the number to a string
+            string s = to_string(num);
+            
+            // Iterate through each character of the string
+            for (char c : s) {
+                // Convert the character back to an integer and add to the answer
+                // 'c - '0'' is a standard trick to convert a char digit to its int value
+                answer.push_back(c - '0');
+            }
+        }
+        
+        return answer;
+    }
+};
