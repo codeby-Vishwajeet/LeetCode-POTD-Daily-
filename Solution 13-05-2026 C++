@@ -1,0 +1,46 @@
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    int minMoves(vector<int>& nums, int limit) {
+        int n = nums.size();
+        
+        // Difference array to keep track of the change in moves.
+        // Size is 2 * limit + 2 to safely handle index + 1 operations.
+        vector<int> diff(2 * limit + 2, 0);
+        
+        for (int i = 0; i < n / 2; ++i) {
+            int a = min(nums[i], nums[n - 1 - i]);
+            int b = max(nums[i], nums[n - 1 - i]);
+            
+            // Base case: at target sum = 2, we assume it takes 2 moves
+            diff[2] += 2;
+            
+            // Target sum reaches (a + 1), moves decrease by 1 (2 -> 1)
+            diff[a + 1] -= 1;
+            
+            // Target sum reaches (a + b), moves decrease by 1 (1 -> 0)
+            diff[a + b] -= 1;
+            
+            // Target sum goes past (a + b), moves increase by 1 (0 -> 1)
+            diff[a + b + 1] += 1;
+            
+            // Target sum goes past (b + limit), moves increase by 1 (1 -> 2)
+            diff[b + limit + 1] += 1;
+        }
+        
+        int min_moves = n; // Maximum possible moves is changing every element (n)
+        int current_moves = 0;
+        
+        // Sweep line: calculate the actual moves for each possible target sum X
+        for (int x = 2; x <= 2 * limit; ++x) {
+            current_moves += diff[x];
+            min_moves = min(min_moves, current_moves);
+        }
+        
+        return min_moves;
+    }
+};
