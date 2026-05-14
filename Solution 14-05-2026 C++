@@ -1,0 +1,39 @@
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isGood(vector<int>& nums) {
+        // The expected 'n' is the length of the array minus 1
+        int n = nums.size() - 1;
+        
+        // A valid array must have at least 2 elements (e.g., base[1] = [1, 1])
+        if (n < 1) return false;
+        
+        // Frequency array to count occurrences of numbers from 1 to n
+        vector<int> count(n + 1, 0);
+        
+        for (int num : nums) {
+            // If the number is out of the valid range [1, n], it's not a good array
+            if (num < 1 || num > n) {
+                return false;
+            }
+            count[num]++;
+        }
+        
+        // Check if numbers 1 to n-1 appear exactly once
+        for (int i = 1; i < n; i++) {
+            if (count[i] != 1) {
+                return false;
+            }
+        }
+        
+        // Check if the maximum number 'n' appears exactly twice
+        if (count[n] != 2) {
+            return false;
+        }
+        
+        return true;
+    }
+};
