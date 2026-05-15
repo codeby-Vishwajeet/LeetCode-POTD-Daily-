@@ -1,0 +1,29 @@
+#include <vector>
+
+class Solution {
+public:
+    int findMin(std::vector<int>& nums) {
+        int left = 0;
+        int right = nums.size() - 1;
+        
+        // We use left < right instead of left <= right because 
+        // we are narrowing down the search space to a single element.
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            
+            // If the middle element is greater than the rightmost element,
+            // the minimum must be strictly to the right of mid.
+            if (nums[mid] > nums[right]) {
+                left = mid + 1;
+            } 
+            // Otherwise, the right side is sorted, meaning the minimum 
+            // is at mid or to the left of mid.
+            else {
+                right = mid;
+            }
+        }
+        
+        // When left == right, we've found the minimum element
+        return nums[left];
+    }
+};
