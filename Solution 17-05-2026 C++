@@ -1,0 +1,25 @@
+#include <vector>
+
+class Solution {
+public:
+    bool canReach(std::vector<int>& arr, int start) {
+        // Base case: Out of bounds or already visited (marked negative)
+        if (start < 0 || start >= arr.size() || arr[start] < 0) {
+            return false;
+        }
+        
+        // Base case: We found a 0!
+        if (arr[start] == 0) {
+            return true;
+        }
+        
+        // Store the jump distance
+        int jump = arr[start];
+        
+        // Mark the current index as visited by negating its value
+        arr[start] = -jump;
+        
+        // Recursively check jumping right or jumping left
+        return canReach(arr, start + jump) || canReach(arr, start - jump);
+    }
+};
