@@ -1,0 +1,70 @@
+#include <vector>
+#include <unordered_map>
+#include <queue>
+
+using namespace std;
+
+class Solution {
+public:
+    int minJumps(vector<int>& arr) {
+        int n = arr.size();
+        
+        // Base case: If array has only 1 element, we are already at the end.
+        if (n <= 1) return 0;
+        
+        // Step 1: Build a map to store all indices for each unique value
+        unordered_map<int, vector<int>> graph;
+        for (int i = 0; i < n; i++) {
+            graph[arr[i]].push_back(i);
+        }
+        
+        // Step 2: Initialize BFS
+        queue<int> q;
+        vector<bool> visited(n, false);
+        
+        q.push(0);
+        visited[0] = true;
+        int steps = 0;
+        
+        // Step 3: Run BFS
+        while (!q.empty()) {
+            int size = q.size();
+            
+            // Process all nodes at the current depth (steps)
+            for (int i = 0; i < size; i++) {
+                int curr = q.front();
+                q.pop();
+                
+                // If we've reached the last index, return the step count
+                if (curr == n - 1) return steps;
+                
+                // 1. Jump to indices with the same value
+                if (graph.count(arr[curr])) {
+                    for (int next : graph[arr[curr]]) {
+                        if (!visited[next]) {
+                            visited[next] = true;
+                            q.push(next);
+                        }
+                    }
+                    // CRUCIAL: Clear the list to prevent redundant processing (prevents TLE)
+                    graph.erase(arr[curr]); 
+                }
+                
+                // 2. Jump forward
+                if (curr + 1 < n && !visited[curr + 1]) {
+                    visited[curr + 1] = true;
+                    q.push(curr + 1);
+                }
+                
+                // 3. Jump backward
+                if (curr - 1 >= 0 && !visited[curr - 1]) {
+                    visited[curr - 1] = true;
+                    q.push(curr - 1);
+                }
+            }
+            steps++; // Increment step count after processing the entire current level
+        }
+        
+        return -1;
+    }
+};
